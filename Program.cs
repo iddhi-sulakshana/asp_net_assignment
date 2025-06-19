@@ -81,6 +81,7 @@ builder.Services.AddSwaggerGen();
 
 // Register the services
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IDemoDataService, DemoDataService>();
 
 var app = builder.Build();
 
