@@ -6,6 +6,6 @@ namespace asp_net_assignment.Interfaces
     public interface IAuthService
     {
         Task<IdentityResult> RegisterAsync(RegisterDTO dto);
-        Task<string?> LoginAsync(LoginDTO dto);
+        Task<AuthResultDto> LoginAsync(LoginDTO dto);
     }
 }

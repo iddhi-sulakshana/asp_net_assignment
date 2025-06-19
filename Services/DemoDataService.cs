@@ -1,5 +1,6 @@
 ﻿using asp_net_assignment.Interfaces;
 using asp_net_assignment.Models.Data;
+using asp_net_assignment.Models.DTO;
 using asp_net_assignment.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 

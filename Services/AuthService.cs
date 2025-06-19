@@ -25,13 +25,23 @@ namespace asp_net_assignment.Services
             return await _userManager.CreateAsync(user, dto.Password);
         }
 
-        public async Task<string?> LoginAsync(LoginDTO dto)
+        public async Task<AuthResultDto> LoginAsync(LoginDTO dto)
         {
             var user = await _userManager.FindByEmailAsync(dto.Email);
-            if (user == null || !await _userManager.CheckPasswordAsync(user, dto.Password))
-                return null;
+            if (user == null)
+                return new AuthResultDto { Success = false, Message = "Email not registered" };
 
-            return GenerateToken(user);
+            var isPasswordValid = await _userManager.CheckPasswordAsync(user, dto.Password);
+            if (!isPasswordValid)
+                return new AuthResultDto { Success = false, Message = "Invalid password" };
+
+            var token = GenerateToken(user);
+
+            return new AuthResultDto
+            {
+                Success = true,
+                Token = token
+            };
         }
 
         private string GenerateToken(IdentityUser user)

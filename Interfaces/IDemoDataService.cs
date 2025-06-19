@@ -1,4 +1,4 @@
-﻿using asp_net_assignment.Models.Data;
+﻿using asp_net_assignment.Models.DTO;
 using asp_net_assignment.Models.Entities;
 
 namespace asp_net_assignment.Interfaces

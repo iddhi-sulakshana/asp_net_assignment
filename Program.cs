@@ -39,6 +39,42 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = builder.Configuration["Jwt:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(key)
     };
+
+    options.Events = new JwtBearerEvents
+    {
+        OnAuthenticationFailed = context =>
+        {
+            context.NoResult();
+            context.Response.StatusCode = 401;
+            context.Response.ContentType = "application/json";
+
+            var message = context.Exception.GetType() == typeof(SecurityTokenExpiredException)
+                ? "Token has expired."
+                : "Authentication failed. Token is invalid.";
+
+            return context.Response.WriteAsync($"{{\"message\": \"{message}\"}}");
+        },
+        OnChallenge = context =>
+        {
+            context.HandleResponse(); 
+
+            context.Response.StatusCode = 401;
+            context.Response.ContentType = "application/json";
+
+            if (string.IsNullOrEmpty(context.Request.Headers["Authorization"]))
+            {
+                return context.Response.WriteAsync("{\"message\": \"Authorization header missing.\"}");
+            }
+
+            return context.Response.WriteAsync("{\"message\": \"Unauthorized access. Please provide a valid token.\"}");
+        },
+        OnForbidden = context =>
+        {
+            context.Response.StatusCode = 403;
+            context.Response.ContentType = "application/json";
+            return context.Response.WriteAsync("{\"message\": \"You do not have permission to access this resource.\"}");
+        }
+    };
 });
 
 // Swagger / OpenAPI Configuration
